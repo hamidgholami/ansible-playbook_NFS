@@ -1,7 +1,7 @@
 ---
 ansible_workspace: "/home/ansibleWorkspace"
 
-NFS_SERVER: "false"
+NFS_SERVER: false
 
 share_directory_path_server: "/opt/nfs-share"
 

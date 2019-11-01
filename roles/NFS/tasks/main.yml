@@ -1,43 +1,6 @@
-#- name: Create Ansible workspace
-#  file: path=/home/ansibleWorkspace state=directory
-#  tags: [create_workspace]
-#
-#- name: Archive & get backup from repo files in /etc/yum.repos.d/
-#  archive: path=/etc/yum.repos.d/* dest=/home/ansibleWorkspace/oldrepo.gz remove=yes
-#  tags: [archive_backup]
-#
-#
-#- name: Unarchive localrepo
-#  unarchive: src=localrepo.gz dest=/home/ansibleWorkspace copy=yes
-#  tags: [unarchive_localrepo]
-#
-#- name: Copy localrepo.repo to /etc/yum.repos.d/
-#  copy: src=localrepo.repo dest=/etc/yum.repos.d
-#  tags: [copy_localrepo]
-#
-#- name: Install nfs-utils
-#  yum: name=nfs-utils state=present
-#  tags: [Install_NFS]
-#
-#- name: Restart rpcbind servics
-#  service: name=rpcbind state=restarted enabled=yes
-#  tags: [start_service]
-#
-#- name: Restart nfs-server servics
-#  service: name=nfs-server state=restarted enabled=yes
-#  tags: [start_service]
-#
-#- name: Restart nfs-lock servics
-#  service: name=nfs-lock state=restarted enabled=yes
-#  tags: [start_service]
-#
-#- name: Restart nfs-idmap servics
-#  service: name=nfs-idmap state=restarted enabled=yes
-#  tags: [start_service]
-############################################################
 - name: Install NFS server
   include: nfs-server.yml
-  when: NFS_SERVER 
+  when: NFS_SERVER
   tags: [conditional]
 
 - name: Install NFS client

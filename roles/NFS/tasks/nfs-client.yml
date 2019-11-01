@@ -1,34 +1,34 @@
-- name: Create Ansible workspace
+- name: client|Create Ansible workspace
   file: path={{ ansible_workspace }} state=directory
   tags: [create_workspace]
 
-- name: Archive & get backup from repo files in /etc/yum.repos.d/
+- name: client|Archive & get backup from repo files in /etc/yum.repos.d/
   archive: path=/etc/yum.repos.d/* dest=/etc/yum.repos.d/oldrepo.gz remove=yes
   tags: [archive_backup]
 
-- name: Unarchive localrepo
+- name: client|Unarchive localrepo
   unarchive: src=localrepo.gz dest={{ ansible_workspace }} copy=yes
   tags: [unarchive_localrepo]
 
-- name: Copy localrepo.repo to /etc/yum.repos.d/
+- name: client|Copy localrepo.repo to /etc/yum.repos.d/
   copy: src=localrepo.repo dest=/etc/yum.repos.d
   tags: [copy_localrepo]
 
-- name: Install nfs-utils
+- name: client|Install nfs-utils
   yum: name=nfs-utils state=present
   tags: [Install_NFS]
 
-- name: Create share directory
-  file: path={{ share_directory_path }} state=directory
-  tags: [create_share]
+- name: client|Create share directory
+  file: path={{ share_directory_path_client }} state=directory
+  tags: [create_share_client]
 
-- name: Mount nfs directory
-  shell: mount -t nfs {{ NFS_SERVER_IP }}:{{ share_directory_path }}  {{ share_directory_path_client }}
+- name: client|Mount nfs directory
+  shell: mount -t nfs {{ NFS_SERVER_IP }}:{{ share_directory_path_server }}  {{ share_directory_path_client }}
   tags: [mount_nfs]
 
-- name: Set to /etc/fstab
+- name: client|Set to /etc/fstab
   mount:
-    src: "{{ NFS_SERVER_IP }}":"{{ share_directory_path_server }}" 
+    src: "{{ NFS_SERVER_IP }}:{{ share_directory_path_server }}"
     path: "{{ share_directory_path_client }}" 
     fstype: nfs
     opts: defaults
@@ -38,24 +38,24 @@
     backup: yes
   tags: [fstab]
 
-- name: Remove ansible workspace
+- name: client|Remove ansible workspace
   file: path={{ ansible_workspace }} state=absent 
   tags: [remove_workspace]
 
-- name: Run df -h
+- name: client|Run df -h
   shell: df -h
   register: df_result
   tags: [df]
 
-- name: Show df -h content
+- name: client|Show df -h content
   debug: msg={{ df_result }}
   tags: [df]
 
-- name: cat /etc/fstab 
+- name: client|cat /etc/fstab 
   shell: cat /etc/fstab
   register: fstab_result
   tags: [fstab_show]
 
-- name: Show /etc/fstab content
+- name: client|Show /etc/fstab content
   debug: msg={{ fstab_result }}
   tags: [fstab_show]
