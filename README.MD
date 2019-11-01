@@ -24,7 +24,7 @@ Ultimately, run ansible-playbook for install NFS Server:
 ```bash
 ansible-playbook -i inventory/hostsfile NFS.yml
 ```
-
+***
 ## Install NFS Client
 
 According to the previous description regarding install NFS server, now if you want install NFS client please set `false` for `NFS_SERVER` in `roles/NFS/vars/main.yml` and run previous command again:
