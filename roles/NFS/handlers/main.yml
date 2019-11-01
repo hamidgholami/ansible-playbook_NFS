@@ -1,0 +1,4 @@
+---
+- name: Restart nfs-server service
+  service: name=nfs-server state=restarted enabled=yes
+  tags: [start_service]

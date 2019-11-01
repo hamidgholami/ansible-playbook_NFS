@@ -1,0 +1,5 @@
+[local_repository]
+name=NFS
+baseurl=file:///home/ansibleWorkspace/localrepo
+enabled=1
+gpgcheck=0

@@ -1,0 +1,12 @@
+---
+ansible_workspace: "/home/ansibleWorkspace"
+
+NFS_SERVER: "false"
+
+share_directory_path_server: "/opt/nfs-share"
+
+share_directory_path_client: "/opt/nfs-share-client"
+
+exports_mount_IP: "192.168.159.145" # or NFS_CLIENT_IP
+
+NFS_SERVER_IP: "192.168.159.149"

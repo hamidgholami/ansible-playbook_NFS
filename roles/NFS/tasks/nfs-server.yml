@@ -1,0 +1,57 @@
+- name: Create Ansible workspace
+  file: path={{ ansible_workspace }} state=directory
+  tags: [create_workspace]
+
+- name: Archive & get backup from repo files in /etc/yum.repos.d/
+  archive: path=/etc/yum.repos.d/* dest=/etc/yum.repos.d/oldrepo.gz remove=yes
+  tags: [archive_backup]
+
+- name: Unarchive localrepo
+  unarchive: src=localrepo.gz dest={{ ansible_workspace }} copy=yes
+  tags: [unarchive_localrepo]
+
+- name: Copy localrepo.repo to /etc/yum.repos.d/
+  copy: src=localrepo.repo dest=/etc/yum.repos.d
+  tags: [copy_localrepo]
+
+- name: Install nfs-utils
+  yum: name=nfs-utils state=present
+  tags: [Install_NFS]
+
+- name: Create share directory
+  file: path={{ share_directory_path }} state=directory owner=nfsnobody group=nfsnobody mode=0755
+  tags: [create_share]
+
+- name: Restart rpcbind service
+  service: name=rpcbind state=restarted enabled=yes
+  tags: [start_service]
+
+- name: Restart nfs-server service
+  service: name=nfs-server state=restarted enabled=yes
+  tags: [start_service]
+
+- name: Restart nfs-lock service
+  service: name=nfs-lock state=restarted enabled=yes
+  tags: [start_service]
+
+- name: Restart nfs-idmap service
+  service: name=nfs-idmap state=restarted enabled=yes
+  tags: [start_service]
+
+- name: Config /etc/exports
+  template: src=exports.j2 dest=/etc/exports backup=yes
+  notify: Restart nfs-server service
+  tags: [config_exports]
+
+- name: Remove ansible workspace
+  file: path={{ ansible_workspace }} state=absent
+  tags: [remove_workspace]
+
+- name: cat /etc/exports
+  shell: cat /etc/exports
+  register: exports_result
+  tags: [exports_show]
+
+- name: Show /etc/exports content
+  debug: msg={{ exports_result }}
+  tags: [exports_show]
